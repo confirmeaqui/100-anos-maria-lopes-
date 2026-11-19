@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -85,6 +86,22 @@
       margin-bottom: 20px;
     }
 
+    .intro-event { text-align: center; margin: 0 auto 25px; max-width: 560px; color: var(--cinza-suave); }
+    .timeline { max-width: 520px; margin: 0 auto 28px; border-left: 2px solid #e7bdc3; padding-left: 25px; }
+    .timeline-item { position: relative; display: flex; gap: 18px; padding: 4px 0 25px; align-items: flex-start; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before { content: ''; position: absolute; left: -32px; top: 12px; height: 12px; width: 12px; border-radius: 50%; background: var(--rosa-queimado); border: 2px solid white; }
+    .timeline-item .time { font-family: 'Cormorant Garamond', serif; color: var(--rosa-queimado-escuro); font-weight: 700; font-size: 1.8rem; min-width: 60px; line-height: 1.2; }
+    .timeline-item h3 { color: var(--rosa-queimado-escuro); font-size: 1.05rem; }
+    .timeline-item p { color: var(--cinza-suave); font-size: .9rem; }
+    .location-heading { text-align: center; font-size: 1rem; margin-bottom: 12px; }
+    .venue { background: var(--off-white); border-radius: 12px; padding: 24px; text-align: center; }
+    .venue strong { color: var(--rosa-queimado-escuro); font-size: 1.1rem; }
+    .venue p { margin: 10px 0 18px; }
+    .map-link { display: inline-block; padding: 11px 17px; border: 1px solid var(--rosa-queimado); border-radius: 8px; color: var(--rosa-queimado-escuro); text-decoration: none; font-weight: 600; font-size: .85rem; }
+    .map-link:hover, .map-link:focus-visible { background: var(--rosa-claro); }
+    .field-help { color: var(--cinza-suave); font-size: .85rem; margin: -3px 0 9px; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--rosa-queimado); outline-offset: 3px; }
     /* Contagem Regressiva */
     .countdown-grid {
       display: grid;
@@ -141,13 +158,6 @@
     /* Formulário */
     .form-group {
       margin-bottom: 20px;
-    }
-
-    .sub-group {
-      margin-left: 10px;
-      padding-left: 15px;
-      border-left: 2px solid var(--creme);
-      margin-top: 10px;
     }
 
     label {
@@ -263,7 +273,7 @@
   <header>
     <p class="subtitle-top">Celebração de</p>
     <h1>100 Anos de Maria Lopes</h1>
-    <p class="date-highlight">03 de Janeiro de 2027 • 12:00h</p>
+    <p class="date-highlight">03 de janeiro de 2027 • A partir das 10h</p>
   </header>
 
   <div class="container">
@@ -291,36 +301,16 @@
       </div>
     </div>
 
-    <!-- Bloco A Missa -->
+    <!-- Detalhes da Festa -->
     <div class="card">
-      <h2 class="section-title">A Missa</h2>
-      <div class="event-details">
-        <div class="detail-item">
-          <h3>Local</h3>
-          <p><strong>A definir</strong></p>
-        </div>
-        <div class="detail-item">
-          <h3>Horário</h3>
-          <p><strong>A definir</strong></p>
-        </div>
+      <h2 class="section-title">Nossa celebração</h2>
+      <p class="intro-event">Um século de histórias, amor e memórias merece ser celebrado ao lado de pessoas especiais. Será uma alegria ter você conosco para celebrar este momento tão especial!</p>
+      <div class="timeline">
+        <div class="timeline-item"><span class="time">10h</span><div><h3>Celebração</h3><p>Um momento de gratidão pela vida de Maria Lopes.</p></div></div>
+        <div class="timeline-item"><span class="time">12h</span><div><h3>Almoço comemorativo</h3><p>Depois da celebração, vamos compartilhar uma refeição especial.</p></div></div>
       </div>
-    </div>
-
-    <!-- Bloco O Almoço -->
-    <div class="card">
-      <h2 class="section-title">O Almoço</h2>
-      <div class="event-details">
-        <div class="detail-item">
-          <h3>Local</h3>
-          <p><strong>Rancho Dona Carmelita</strong></p>
-          <p>Cruzeta - RN</p>
-        </div>
-        <div class="detail-item">
-          <h3>Horário</h3>
-          <p><strong>03/01/2027</strong></p>
-          <p>Início às 12:00h</p>
-        </div>
-      </div>
+      <h3 class="location-heading">Local do Evento</h3>
+      <div class="venue"><strong>Rancho Dona Carmelita</strong><p>Rua Carmelita Monteiro da Silva, 26 – Centro<br>Cruzeta – RN, CEP 59375-000</p><a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Rua%20Carmelita%20Monteiro%20da%20Silva%2C%2026%2C%20Centro%2C%20Cruzeta%2C%20RN%2C%2059375-000" target="_blank" rel="noopener noreferrer">Ver endereço no Google Maps ↗</a></div>
     </div>
 
     <!-- Formulário de RSVP -->
@@ -353,28 +343,21 @@
             <input type="number" id="qtdAcompanhantes" min="0" value="0" placeholder="0">
           </div>
 
-          <!-- Caixas dinâmicas para o nome de cada acompanhante -->
           <div class="form-group hidden" id="groupNomesAcompanhantes">
-            <label>Nome(s) do(s) Acompanhante(s)</label>
-            <div id="containerListaAcompanhantes"></div>
+            <label for="nomesAcompanhantes">Nome(s) do(s) Acompanhante(s)</label>
+            <textarea id="nomesAcompanhantes" rows="3" placeholder="Informe o nome completo de cada acompanhante (ex: João Lopes, Ana Maria...)"></textarea>
           </div>
 
-          <!-- Caixa de Seleção de Restrição Alimentar -->
           <div class="form-group">
-            <label for="selectRestricao">Possui alguma restrição alimentar ou alergia?</label>
-            <select id="selectRestricao" onchange="toggleOutraRestricao()">
-              <option value="Sem restrições">Sem restrições</option>
-              <option value="Glúten">Glúten</option>
-              <option value="Lactose">Lactose</option>
-              <option value="Vegetariano">Vegetariano</option>
-              <option value="Outro">Outro</option>
-            </select>
+            <label for="restricaoAlimentar">Possui alguma restrição alimentar ou alergia?</label>
+            <input type="text" id="restricaoAlimentar" placeholder="Ex: Vegetariano, intolerância a lactose, alergia a camarão...">
           </div>
+        </div>
 
-          <div class="form-group hidden" id="groupOutraRestricao">
-            <label for="outraRestricaoTexto">Especifique a restrição alimentar *</label>
-            <input type="text" id="outraRestricaoTexto" placeholder="Digite qual é a restrição ou alergia...">
-          </div>
+        <div class="form-group">
+          <label for="recado">Deixe um recado para Maria Lopes (opcional)</label>
+          <p class="field-help">Uma lembrança, uma mensagem de carinho ou seus votos para esta data tão especial.</p>
+          <textarea id="recado" rows="4" maxlength="1500" placeholder="Escreva sua mensagem aqui..."></textarea>
         </div>
 
         <button type="submit" id="btnSubmit">Enviar Confirmação</button>
@@ -390,17 +373,18 @@
   </footer>
 
   <script>
+    // Substitua pela URL da sua implantação do Google Apps Script:
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIuWYuwy1OZdq5EVvcsPDuRYD120eun18xjSb3lhiUgNm9L4TzNFYr-DTxtY6OOQRH/exec';
 
     // 1. Contagem Regressiva
-    const targetDate = new Date('2027-01-03T12:00:00').getTime();
+    const targetDate = new Date('2027-01-03T10:00:00-03:00').getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
       const distance = targetDate - now;
 
-      if (distance < 0) {
-        document.querySelector('.countdown-grid').innerHTML = "<p style='grid-column: span 4; font-weight: bold;'>É hoje! Seja bem-vindo(a)!</p>";
+      if (distance <= 0) {
+        document.querySelector('.countdown-grid').innerHTML = "<p style='grid-column: span 4; font-weight: bold;'>A celebração começou! Seja bem-vindo(a)!</p>";
         return;
       }
 
@@ -418,46 +402,18 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // 2. Geração Dinâmica dos Campos de Acompanhantes
+    // 2. Lógica Dinâmica do Formulário
     const qtdInput = document.getElementById('qtdAcompanhantes');
     const groupNomes = document.getElementById('groupNomesAcompanhantes');
-    const containerLista = document.getElementById('containerListaAcompanhantes');
 
     qtdInput.addEventListener('input', () => {
-      const val = parseInt(qtdInput.value, 10) || 0;
-      containerLista.innerHTML = '';
-
+      const val = parseInt(qtdInput.value, 10);
       if (val > 0) {
         groupNomes.classList.remove('hidden');
-        for (let i = 1; i <= val; i++) {
-          const divSub = document.createElement('div');
-          divSub.className = 'sub-group';
-          divSub.innerHTML = `
-            <label for="acomp_${i}">Acompanhante ${i} *</label>
-            <input type="text" class="input-acomp" id="acomp_${i}" required placeholder="Nome completo do acompanhante ${i}">
-          `;
-          containerLista.appendChild(divSub);
-        }
       } else {
         groupNomes.classList.add('hidden');
       }
     });
-
-    // 3. Exibir/Ocultar Campo de Outra Restrição Alimentar
-    function toggleOutraRestricao() {
-      const select = document.getElementById('selectRestricao');
-      const groupOutra = document.getElementById('groupOutraRestricao');
-      const inputOutra = document.getElementById('outraRestricaoTexto');
-
-      if (select.value === 'Outro') {
-        groupOutra.classList.remove('hidden');
-        inputOutra.required = true;
-      } else {
-        groupOutra.classList.add('hidden');
-        inputOutra.required = false;
-        inputOutra.value = '';
-      }
-    }
 
     function toggleAcompanhantesFields(show) {
       const container = document.getElementById('camposAcompanhante');
@@ -468,7 +424,7 @@
       }
     }
 
-    // 4. Envio do Formulário
+    // 3. Envio do Formulário ao Google Sheets
     document.getElementById('rsvpForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -482,37 +438,23 @@
       const status = document.querySelector('input[name="status"]:checked').value;
       const isConfirmado = status === 'Confirmado';
 
-      let nomesAcomp = 'N/A';
-      if (isConfirmado) {
-        const inputsAcomp = document.querySelectorAll('.input-acomp');
-        if (inputsAcomp.length > 0) {
-          const listaNomes = [];
-          inputsAcomp.forEach((inp, idx) => {
-            if (inp.value.trim() !== '') {
-              listaNomes.push(`${idx + 1}. ${inp.value.trim()}`);
-            }
-          });
-          nomesAcomp = listaNomes.length > 0 ? listaNomes.join(' | ') : 'Nenhum informado';
-        }
-      }
-
-      let restricaoFinal = 'N/A';
-      if (isConfirmado) {
-        const selectVal = document.getElementById('selectRestricao').value;
-        if (selectVal === 'Outro') {
-          restricaoFinal = document.getElementById('outraRestricaoTexto').value.trim() || 'Outro';
-        } else {
-          restricaoFinal = selectVal;
-        }
-      }
-
       const formData = {
-        nomeCompleto: document.getElementById('nomeCompleto').value,
+        nomeCompleto: document.getElementById('nomeCompleto').value.trim(),
         status: status,
         qtdAcompanhantes: isConfirmado ? document.getElementById('qtdAcompanhantes').value : 0,
-        nomesAcompanhantes: nomesAcomp,
-        restricaoAlimentar: restricaoFinal
+        nomesAcompanhantes: isConfirmado ? document.getElementById('nomesAcompanhantes').value : 'N/A',
+        restricaoAlimentar: isConfirmado ? (document.getElementById('restricaoAlimentar').value.trim() || 'Nenhuma') : 'N/A',
+        recado: document.getElementById('recado').value.trim()
       };
+
+      if (isConfirmado && Number(formData.qtdAcompanhantes) > 0 && !formData.nomesAcompanhantes.trim()) {
+        feedback.innerText = 'Informe os nomes dos acompanhantes antes de enviar.';
+        feedback.className = 'error';
+        document.getElementById('nomesAcompanhantes').focus();
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = 'Enviar Confirmação';
+        return;
+      }
 
       fetch(SCRIPT_URL, {
         method: 'POST',
@@ -523,12 +465,11 @@
         body: JSON.stringify(formData)
       })
       .then(() => {
-        feedback.innerText = 'Sua resposta foi gravada com sucesso! Muito obrigado.';
+        feedback.innerText = 'Sua resposta foi enviada! Obrigado pelo carinho. Como a integração atual não permite confirmar o recebimento, entre em contato com a família se precisar verificar sua confirmação.';
         feedback.className = 'success';
         document.getElementById('rsvpForm').reset();
         groupNomes.classList.add('hidden');
-        document.getElementById('groupOutraRestricao').classList.add('hidden');
-        containerLista.innerHTML = '';
+        toggleAcompanhantesFields(true);
       })
       .catch(error => {
         console.error('Erro:', error);
