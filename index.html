@@ -304,7 +304,7 @@
     <!-- Detalhes da Festa -->
     <div class="card">
       <h2 class="section-title">Nossa celebração</h2>
-      <p class="intro-event">Um século de histórias, amor e memórias merece ser celebrado ao lado de pessoas especiais. Será uma alegria ter você conosco para celebrar este momento!</p>
+      <p class="intro-event">Um século de histórias, amor e memórias merece ser celebrado ao lado de pessoas especiais. Será uma alegria ter você conosco para celebrar este momento tão especial!</p>
       <div class="timeline">
         <div class="timeline-item"><span class="time">10h</span><div><h3>Celebração</h3><p>Um momento de gratidão pela vida de Maria Lopes.</p></div></div>
         <div class="timeline-item"><span class="time">12h</span><div><h3>Almoço comemorativo</h3><p>Depois da celebração, vamos compartilhar uma refeição especial.</p></div></div>
@@ -327,11 +327,11 @@
           <label>Você poderá comparecer? *</label>
           <div class="radio-group">
             <label class="radio-option">
-              <input type="radio" name="status" value="Confirmado" checked onchange="toggleAcompanhantesFields(true)">
+              <input type="radio" name="status" value="Confirmado" required onchange="toggleAcompanhantesFields(true)">
               Sim, com certeza!
             </label>
             <label class="radio-option">
-              <input type="radio" name="status" value="Não comparecerá" onchange="toggleAcompanhantesFields(false)">
+              <input type="radio" name="status" value="Não comparecerá" required onchange="toggleAcompanhantesFields(false)">
               Infelizmente não poderei ir
             </label>
           </div>
@@ -339,18 +339,31 @@
 
         <div id="camposAcompanhante">
           <div class="form-group">
-            <label for="qtdAcompanhantes">Quantidade de Acompanhantes</label>
-            <input type="number" id="qtdAcompanhantes" min="0" value="0" placeholder="0">
+            <label for="qtdAcompanhantes">Quantidade de acompanhantes</label>
+            <select id="qtdAcompanhantes" required>
+              <option value="" disabled selected>Selecione a quantidade</option>
+              <option value="0">0 acompanhantes</option>
+              <option value="1">1 acompanhante</option>
+              <option value="2">2 acompanhantes</option>
+              <option value="3">3 acompanhantes</option>
+              <option value="4">4 acompanhantes</option>
+              <option value="5">5 acompanhantes</option>
+            </select>
           </div>
 
-          <div class="form-group hidden" id="groupNomesAcompanhantes">
-            <label for="nomesAcompanhantes">Nome(s) do(s) Acompanhante(s)</label>
-            <textarea id="nomesAcompanhantes" rows="3" placeholder="Informe o nome completo de cada acompanhante (ex: João Lopes, Ana Maria...)"></textarea>
-          </div>
+          <div class="hidden" id="groupNomesAcompanhantes" aria-live="polite"></div>
 
           <div class="form-group">
-            <label for="restricaoAlimentar">Possui alguma restrição alimentar ou alergia?</label>
-            <input type="text" id="restricaoAlimentar" placeholder="Ex: Vegetariano, intolerância a lactose, alergia a camarão...">
+            <label for="restricaoAlimentar">Possui alguma restrição alimentar ou alergia? *</label>
+            <select id="restricaoAlimentar" required>
+              <option value="" disabled selected>Selecione uma opção</option>
+              <option value="Não">Não</option>
+              <option value="Alergia a camarão">Alergia a camarão</option>
+              <option value="Intolerância à lactose">Intolerância à lactose</option>
+              <option value="Intolerância ao glúten">Intolerância ao glúten</option>
+              <option value="Vegetariano">Vegetariano</option>
+              <option value="Vegano">Vegano</option>
+            </select>
           </div>
         </div>
 
@@ -406,22 +419,38 @@
     const qtdInput = document.getElementById('qtdAcompanhantes');
     const groupNomes = document.getElementById('groupNomesAcompanhantes');
 
-    qtdInput.addEventListener('input', () => {
-      const val = parseInt(qtdInput.value, 10);
-      if (val > 0) {
-        groupNomes.classList.remove('hidden');
-      } else {
-        groupNomes.classList.add('hidden');
+    function atualizarCamposAcompanhantes() {
+      const quantidade = qtdInput.value === "" ? 0 : Number(qtdInput.value);
+      groupNomes.replaceChildren();
+      groupNomes.classList.toggle('hidden', quantidade === 0);
+      for (let i = 1; i <= quantidade; i++) {
+        const grupo = document.createElement('div');
+        grupo.className = 'form-group';
+        const label = document.createElement('label');
+        label.htmlFor = `acompanhante${i}`;
+        label.textContent = `Nome completo do acompanhante ${i} *`;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `acompanhante${i}`;
+        input.className = 'nome-acompanhante';
+        input.placeholder = `Nome do acompanhante ${i}`;
+        input.autocomplete = 'off';
+        input.required = true;
+        grupo.append(label, input);
+        groupNomes.appendChild(grupo);
       }
-    });
+    }
+    qtdInput.addEventListener('change', atualizarCamposAcompanhantes);
+    toggleAcompanhantesFields(false);
 
     function toggleAcompanhantesFields(show) {
       const container = document.getElementById('camposAcompanhante');
-      if (show) {
-        container.classList.remove('hidden');
-      } else {
-        container.classList.add('hidden');
-      }
+      container.classList.toggle('hidden', !show);
+      qtdInput.required = show;
+      document.getElementById('restricaoAlimentar').required = show;
+      container.querySelectorAll('input, select').forEach(field => {
+        field.disabled = !show;
+      });
     }
 
     // 3. Envio do Formulário ao Google Sheets
@@ -431,31 +460,58 @@
       const btnSubmit = document.getElementById('btnSubmit');
       const feedback = document.getElementById('feedbackMessage');
 
-      btnSubmit.disabled = true;
-      btnSubmit.innerText = 'Enviando...';
       feedback.className = 'hidden';
-
-      const status = document.querySelector('input[name="status"]:checked').value;
+      const statusSelecionado = document.querySelector('input[name="status"]:checked');
+      if (!statusSelecionado) {
+        feedback.textContent = 'Informe se você poderá comparecer.';
+        feedback.className = 'error';
+        return;
+      }
+      const nomePrincipal = document.getElementById('nomeCompleto');
+      if (!nomePrincipal.value.trim()) {
+        feedback.textContent = 'Preencha seu nome completo.';
+        feedback.className = 'error';
+        nomePrincipal.focus();
+        return;
+      }
+      if (statusSelecionado.value === 'Confirmado' && qtdInput.value === '') {
+        feedback.textContent = 'Selecione a quantidade de acompanhantes, mesmo que seja zero.';
+        feedback.className = 'error';
+        qtdInput.focus();
+        return;
+      }
+      const status = statusSelecionado.value;
       const isConfirmado = status === 'Confirmado';
+
+      const restricaoSelect = document.getElementById('restricaoAlimentar');
+      if (isConfirmado && !restricaoSelect.value) {
+        feedback.textContent = 'Selecione uma opção de restrição alimentar, mesmo que seja Não.';
+        feedback.className = 'error';
+        restricaoSelect.focus();
+        return;
+      }
+
+      const nomes = isConfirmado ? Array.from(document.querySelectorAll('.nome-acompanhante'), input => input.value.trim()) : [];
 
       const formData = {
         nomeCompleto: document.getElementById('nomeCompleto').value.trim(),
         status: status,
         qtdAcompanhantes: isConfirmado ? document.getElementById('qtdAcompanhantes').value : 0,
-        nomesAcompanhantes: isConfirmado ? document.getElementById('nomesAcompanhantes').value : 'N/A',
-        restricaoAlimentar: isConfirmado ? (document.getElementById('restricaoAlimentar').value.trim() || 'Nenhuma') : 'N/A',
+        nomesAcompanhantes: isConfirmado ? (nomes.join(', ') || 'N/A') : 'N/A',
+        restricaoAlimentar: isConfirmado ? restricaoSelect.value : 'N/A',
         recado: document.getElementById('recado').value.trim()
       };
 
-      if (isConfirmado && Number(formData.qtdAcompanhantes) > 0 && !formData.nomesAcompanhantes.trim()) {
-        feedback.innerText = 'Informe os nomes dos acompanhantes antes de enviar.';
+      if (isConfirmado && nomes.some(nome => !nome)) {
+        feedback.innerText = 'Preencha o nome de todos os acompanhantes.';
         feedback.className = 'error';
-        document.getElementById('nomesAcompanhantes').focus();
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = 'Enviar Confirmação';
+        const primeiroVazio = Array.from(document.querySelectorAll('.nome-acompanhante')).find(input => !input.value.trim());
+        if (primeiroVazio) primeiroVazio.focus();
         return;
       }
 
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = 'Enviando...';
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -468,8 +524,8 @@
         feedback.innerText = 'Sua resposta foi enviada! Obrigado pelo carinho. Como a integração atual não permite confirmar o recebimento, entre em contato com a família se precisar verificar sua confirmação.';
         feedback.className = 'success';
         document.getElementById('rsvpForm').reset();
-        groupNomes.classList.add('hidden');
-        toggleAcompanhantesFields(true);
+        atualizarCamposAcompanhantes();
+        toggleAcompanhantesFields(false);
       })
       .catch(error => {
         console.error('Erro:', error);
